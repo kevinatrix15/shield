@@ -223,7 +223,7 @@ class GridCircle
     auto insideBottom{[&](const size_t yIdx) { return c.y() >= yIdx; }};
     auto insideTop{[&](const size_t yIdx) { return yIdx + c.y() <= yLimit; }};
 
-    // TODO: consider replacing this with a simple brute force loop over
+    // TODO: FUTURE WORK- consider replacing this with a simple brute force loop over
     // bounding box, checking each point is within the circle. This will avoid
     // all of the excessive checking for each point to be within the domain
     for (size_t yIdx = 0; yIdx <= r; ++yIdx) {

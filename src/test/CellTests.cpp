@@ -73,10 +73,8 @@ TEST_CASE("Distance is valid for diagonal test", "setters")
   testDist("unit vectors2", {0, 0}, {1, 0}, 1.0);
 
   testDist("unit diagonal", {1, 1}, {0, 0}, sqrt(2.0));
-  // (size_t)(5 * sqrt(2)) = (size_t)(7.0711) = 7
   testDist("diagonal- 5*sqrt(2)", {0, 0}, {5, 5}, 5.0 * sqrt(2.0));
 
-  // 3 4 5 triangles
   testDist("3 4 5 triangle", {0, 3}, {4, 0}, 5.0);
   testDist("3 4 5 triangle- flipped", {3, 0}, {0, 4}, 5.0);
 }

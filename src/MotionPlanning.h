@@ -106,7 +106,7 @@ class AStar
     DataMap<Node> nodeMap(mapShape);
 
     // Map tracking which nodes have been explored in the search (closed)
-    // TODO: consider replacing this with unordered_set
+    // TODO: FUTORE WORK- consider replacing this with unordered_set to reduce memory usage
     DataMap<bool> exploredNodes(mapShape, false);
 
     // Put starting node on the open list (with fCost = 0 and gCost = 0)

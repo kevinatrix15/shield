@@ -154,9 +154,6 @@ class ConfigurationSpace : public GridIndexer
    */
   void assignBoundaryCellStates()
   {
-    // TODO: add visitRowsAndCols() to Grid class, providing a range
-    // TODO: consider moving the below into the Grid class for specialized
-    // iteration
     std::vector<size_t> allCols(numX());
     std::iota(allCols.begin(), allCols.end(), 0);
 

@@ -103,8 +103,6 @@ int main(int argc, char** argv)
       break;
     }
     case obstacle_config::MAZE: {
-      // two circles at opposite corners
-      // TODO: fix the below- it runs into nx and is out of bounds
       const size_t radius = static_cast<int>(std::min(nx, ny) / 10) -
                             static_cast<int>(robotRadius);
       obstacles.emplace_back(Circle({nx / 5, 0}, radius));
