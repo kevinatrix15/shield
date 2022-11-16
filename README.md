@@ -57,11 +57,26 @@ where positional arguments are as follows:
 
 ### Pre-configured Cases
 In each case, the robot is attempting to start from the lower left corner with a goal in the upper right. The following configurations are provided for demonstration.
+
 Case 1- Simple, obstacle-free space
+
+![alt text](https://github.com/kevinatrix15/shield/blob/main/samples/solution-cas1.png?raw=true)
+
 Case 2- Impossible solution, with an obstacle spanning the minimum dimension of the task space.
+
+![alt text](https://github.com/kevinatrix15/shield/blob/main/samples/solution-cas2.png?raw=true)
+
 Case 3- A simple case with two obstacles in the opposite corners from the start and goal.
+
+![alt text](https://github.com/kevinatrix15/shield/blob/main/samples/solution-cas3.png?raw=true)
+
 Case 4- A complex case with many obstacles to navigate around.
+
+![alt text](https://github.com/kevinatrix15/shield/blob/main/samples/solution-cas4.png?raw=true)
+
 Case 5- A maze of obstacles, forcing the robot to take a winding path.
+
+![alt text](https://github.com/kevinatrix15/shield/blob/main/samples/solution-cas5.png?raw=true)
 
 Note that sample outputs from the above cases may be found under the `samples/` directory.
 
