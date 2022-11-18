@@ -12,10 +12,16 @@
 #include "Grid.h"
 
 #include <algorithm>
+#include <array>
+#include <limits>
 #include <numeric>
 #include <ostream>
 #include <string>
 #include <vector>
+
+constexpr size_t NUM_NEIGHBORS = 9U;
+constexpr size_t _NULL_IDX = std::numeric_limits<size_t>::max();
+const Cell NULL_CELL(_NULL_IDX, _NULL_IDX);
 
 /**
  * @brief Enumerator for indicating the type of each cell in the domain.
@@ -116,17 +122,21 @@ class ConfigurationSpace : public GridIndexer
    * @param c The cell to check.
    * @return std::vector<Cell> The set of accessible neighbors.
    */
-  std::vector<Cell> getAccessibleNbrs(const Cell& c) const
+  std::array<Cell, NUM_NEIGHBORS> getAccessibleNbrs(const Cell& c) const
   {
-    std::vector<Cell> nbrs;
+    // Initialize all neighbors to NULL_CELL for ease of checking when consumed
+    // by caller
+    std::array<Cell, NUM_NEIGHBORS> nbrs{NULL_CELL};
     const size_t minX = c.x() > 0 ? c.x() - 1 : c.x();
     const size_t minY = c.y() > 0 ? c.y() - 1 : c.y();
     const size_t maxX = c.x() < numX() - 1 ? c.x() + 1 : c.x();
     const size_t maxY = c.y() < numY() - 1 ? c.y() + 1 : c.y();
-    for (size_t yIdx = minY; yIdx <= maxY; ++yIdx) {
+    for (size_t yIdx = minY, i = 0; yIdx <= maxY; ++yIdx, ++i) {
       for (size_t xIdx = minX; xIdx <= maxX; ++xIdx) {
-        if (m_cellStates.at(xIdx, yIdx) == cell_state::FREE) {
-          nbrs.emplace_back(Cell(xIdx, yIdx));
+        Cell nbr(xIdx, yIdx);
+        // Neighbor isn't the provided Cell, and its state is FREE 
+        if (c != nbr && m_cellStates.at(xIdx, yIdx) == cell_state::FREE) {
+          nbrs[i] = std::move(nbr);
         }
       }
     }
@@ -142,7 +152,7 @@ class ConfigurationSpace : public GridIndexer
                                   const ConfigurationSpace& space)
   {
     return os << space.m_cellStates;
-  };
+  }
 
   private:
   size_t m_robotRadius;

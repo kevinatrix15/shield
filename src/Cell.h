@@ -28,6 +28,13 @@ class Cell
     // do nothing
   }
 
+  // Rule of 5- declare these as we have a custom default constructor. This
+  // should enable move assignment and construction
+  Cell(const Cell& other) = default;
+  Cell(Cell&& other) = default;
+  Cell& operator=(const Cell& other) = default;
+  Cell& operator=(Cell&& other) = default;
+
   size_t x() const
   {
     return m_x;

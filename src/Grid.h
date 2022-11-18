@@ -152,7 +152,7 @@ class DataMap : public GridIndexer
         os << static_cast<int>(dataMap.at(xIdx, yIdx))
            << (xIdx < dataMap.numX() - 1 ? " " : "");
       }
-      os << std::endl;
+      os << "\n";
     }
     return os;
   };

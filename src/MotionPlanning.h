@@ -40,6 +40,13 @@ struct Node {
     // do nothing
   }
 
+  // Rule of 5- declare these as we have a custom default constructor. This
+  // should enable move assignment and construction
+  Node(const Node& other) = default;
+  Node(Node&& other) = default;
+  Node& operator=(const Node& other) = default;
+  Node& operator=(Node&& other) = default;
+
   void updateCosts(const Cell& goal, const double parentGCost)
   {
     // TODO: FUTURE WORK- make configurable function to determine which
@@ -106,7 +113,7 @@ class AStar
     DataMap<Node> nodeMap(mapShape);
 
     // Map tracking which nodes have been explored in the search (closed)
-    // TODO: FUTORE WORK- consider replacing this with unordered_set to reduce memory usage
+    // TODO: FUTURE WORK- consider replacing this with unordered_set to reduce memory usage
     DataMap<bool> exploredNodes(mapShape, false);
 
     // Put starting node on the open list (with fCost = 0 and gCost = 0)
@@ -129,14 +136,19 @@ class AStar
       // Get all of the current node's accessible neighbors.
       // There are 8 max possible neighbors, but may be less if near
       // the border or within an obstacle
-      const std::vector<Cell> nbrCells = m_cSpace.getAccessibleNbrs(qPos);
+      const std::array<Cell, NUM_NEIGHBORS> nbrCells = m_cSpace.getAccessibleNbrs(qPos);
       for (const auto& nbrCell : nbrCells) {
+        // Cell is marked as NULL_CELL if not accessible, or is itself
+        if (nbrCell == NULL_CELL) {
+          continue;
+        }
+
         // Check if this neighbor is the goal, updates its state, and
         // return a path
         if (nbrCell == goal) {
           std::cout << "Goal found!!!" << std::endl;
           Node nbr(nbrCell, qPos);
-          nodeMap.at(nbr.pos) = nbr;
+          nodeMap.at(nbr.pos) = std::move(nbr);
           return generatePath(nodeMap, goal);
         }
 
@@ -154,7 +166,7 @@ class AStar
           if (nodeMap.at(nbr.pos).fCost == UNSET_VAL ||
               nodeMap.at(nbr.pos).fCost > nbr.fCost) {
             unexploredNodes.emplace(std::make_pair(nbr.fCost, nbr.pos));
-            nodeMap.at(nbr.pos) = nbr;
+            nodeMap.at(nbr.pos) = std::move(nbr);
           }
         }
       }

@@ -8,10 +8,14 @@ project(SaveBB8)
 
 if (MSVC)
     # warning level 4 and all warnings as errors
-    add_compile_options(/W4 /WX)
+    add_compile_options(/W4 /WX /Zi /MD)
+    add_link_options(/Zi)
+    #add_compile_options(/W4 /WX /Zi /MD /D )
+    #add_link_options(/W4 /WX /Zi /MD /D )
 else()
     # lots of warnings and all warnings as errors
-    add_compile_options(-pg -Wall -Wextra -pedantic -Werror)
+    add_compile_options(-g -pg -ggdb -O2 -shared-libgcc -Wall -Wextra -pedantic -Werror)
+    add_link_options(-g -pg -ggdb -O2 -shared-libgcc)
 endif()
 
 set(BUILD_DOC

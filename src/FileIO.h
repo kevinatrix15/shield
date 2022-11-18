@@ -143,7 +143,7 @@ class SolutionPathIO
 
     // write data to file using object's << operator
     for (const auto& pt : solutionPath) {
-      outStream << pt.x() << DELIM << pt.y() << std::endl;
+      outStream << pt.x() << DELIM << pt.y() << "\n";
     }
   }
 
