@@ -18,9 +18,22 @@ After spending time researching various path planning algorithms, I chose to go 
 ## Additional Considerations
 In the interest of time, it is not necessary to implement the following, but please briefly (< 150 words total) answer how you would adjust your solution to address these issues.
 1. Performance - What is the bottleneck in your library? How could you go about improving performance in the future?
+   
+   Upon inspection using both VTune and gprof, the primary bottleneck of the entire application is IO, in particular the writing of the map to disk found in ConfigSpaceIO::write(). This was not a surprising finding given the fact that data is currently being written in ASCII format and the inherent cost of converting data from memory to a string to write. This could be significantly reduced going forward by instead adding binary writing and reading capability, avoiding this conversion altogether.
+
+   The more interesting bottleneck with regards to the A* algorithm was found to be ConfigurationSpace::getAccessibleNbrs(), which is called for each considered and is used to find each of the accessible neighboring nodes. In its current form, the function starts with an empty vector, and emplaces neighbors onto the vector if they're accessible. Running with a map with dimensions 4500x4500, this function took 71% of the run time, the bulk of which was spent in std::vector::_Emplace_reallocate() to reallocate the vector in memory and copy data as more neighbors are emplaced. Since we have a fixed stencil size, this could be significantly optimized by using a std::array of the stencil size and avoid the reallocation altogether.
   
 2. Modularity - How would you handle additional planning algorithms and new methods of updating the map?
+
+Assuming we wish to have a runtime-configurable selection of search algorithms, one way this could be supported is through polymorphism by defining an interface class with a `searchPath()` method which simply takes a `start` and `goal` cell positions as is currently done, returning the path of cells traversed if a solution is found. The implementations between algorithms would be compared to identify common functionality to be extracted to avoid code duplication.
+
+As for specifying and updating the map- It's likely in a real-world robotic application, the map wouldn't be fully known at the start of the search, and would instead be updated from sensor data in real-time. To support this, I would add an `update()` method to the `ConfigurationSpace` class which could take in obstacle position information. This would be generalized to take in other means for defining the obstacles besides specifying circles. In such a case, I would consider other dynamic search algorithms to update the map as the search progresses. 
+
 3. Cross-Platform - How would you alter your library to support multiple Operating Systems or multiple processors with different instruction sets?
+
+One consideration for supporting cross-platform environments is the build system. I have chosen to build my application using CMake to enable cross-platform builds, and have proven it out on Linux and Windows. According to [online documentation](https://wiki.ros.org/rosbuild/CMakeLists), it should also support ROS commonly used for robotics.
+
+The other major consideration would be proper utilization of resources for the given compute architecture. I would perform a careful analysis of my application to understand the resource utilization (e.g., compute, memory, disk, etc.) to determine whether I would be faced with limitations with a given platform. This may require further optimizations to e.g., select a search algorithm with lower memory complexity, or adjust my selected data structures to improve utilization. Other considerations might come when considering parallelization of the solution to consider communication protocols or programming paradigms.
 
 ## Solutions
 The example application is demonstrated in the code under `src/Main.cpp`. The motion planning solution itself is implemented in `MotionPlanning.h` Other supporting functionality has been implemented as a modular library in various classes contained in `src/`.
