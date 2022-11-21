@@ -143,15 +143,15 @@ int main(int argc, char** argv)
   cSpace.addObstacles(obstacles);
 
   // Write the configuration space to a file
-  const std::filesystem::path cSpaceFile("./output/config-space.txt");
-  ConfigSpaceIO::write(cSpace, cSpaceFile);
+  // const std::filesystem::path cSpaceFile("./output/config-space.txt");
+  // ConfigSpaceIO::write(cSpace, cSpaceFile);
 
   // Read the configuration space back in and assign to a new object
-  ConfigurationSpace cSpace2 = ConfigSpaceIO::read(cSpaceFile);
+  // ConfigurationSpace cSpace2 = ConfigSpaceIO::read(cSpaceFile);
 
   // Search for a solution, with the starting position at the bottom corner, and
   // goal at opposite corner
-  AStar search(cSpace2);
+  AStar search(cSpace);
   const std::vector<Cell> path = search.searchPath(
       {robotRadius + 1, robotRadius + 1},
       {cSpace.numX() - robotRadius - 1, cSpace.numY() - robotRadius - 1});

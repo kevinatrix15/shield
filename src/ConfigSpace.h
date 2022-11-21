@@ -142,7 +142,7 @@ class ConfigurationSpace : public GridIndexer
                                   const ConfigurationSpace& space)
   {
     return os << space.m_cellStates;
-  };
+  }
 
   private:
   size_t m_robotRadius;
