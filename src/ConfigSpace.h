@@ -122,11 +122,12 @@ class ConfigurationSpace : public GridIndexer
    * @param c The cell to check.
    * @return std::vector<Cell> The set of accessible neighbors.
    */
-  std::array<Cell, NUM_NEIGHBORS> getAccessibleNbrs(const Cell& c) const
+  std::vector<Cell> getAccessibleNbrs(const Cell& c) const
   {
     // Initialize all neighbors to NULL_CELL for ease of checking when consumed
     // by caller
-    std::array<Cell, NUM_NEIGHBORS> nbrs{NULL_CELL};
+    std::vector<Cell> nbrs{NUM_NEIGHBORS, NULL_CELL};
+    // std::array<Cell, NUM_NEIGHBORS> nbrs{NULL_CELL};
     const size_t minX = c.x() > 0 ? c.x() - 1 : c.x();
     const size_t minY = c.y() > 0 ? c.y() - 1 : c.y();
     const size_t maxX = c.x() < numX() - 1 ? c.x() + 1 : c.x();

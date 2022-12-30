@@ -34,6 +34,7 @@ class Cell
   Cell(Cell&& other) = default;
   Cell& operator=(const Cell& other) = default;
   Cell& operator=(Cell&& other) = default;
+  ~Cell() = default;
 
   size_t x() const
   {

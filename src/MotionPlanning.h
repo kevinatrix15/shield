@@ -10,6 +10,7 @@
 #include "Cell.h"
 #include "ConfigSpace.h"
 
+#include <cmath>
 #include <iostream>
 #include <limits>
 #include <queue>
@@ -17,6 +18,7 @@
 constexpr double UNSET_VAL = std::numeric_limits<double>::max();
 constexpr size_t _UNSET_IDX = std::numeric_limits<size_t>::max();
 const Cell UNSET_CELL(_UNSET_IDX, _UNSET_IDX);
+const double DIAG_DIST = sqrt(2.0);
 
 // stores {fCost, Cell}
 using CostCell = std::pair<double, Cell>;
@@ -46,13 +48,14 @@ struct Node {
   Node(Node&& other) = default;
   Node& operator=(const Node& other) = default;
   Node& operator=(Node&& other) = default;
+  ~Node() = default;
 
-  void updateCosts(const Cell& goal, const double parentGCost)
+  void updateCosts(const Cell& goal, const double parentGCost, const bool areDiagNbrs)
   {
     // TODO: FUTURE WORK- make configurable function to determine which
     // heuristic to use
     const double hCost = pos.distance(goal);
-    gCost = parentGCost + 1.0;
+    gCost = parentGCost + (areDiagNbrs ? DIAG_DIST : 1.0);
     fCost = gCost + hCost;
   }
 
@@ -136,7 +139,7 @@ class AStar
       // Get all of the current node's accessible neighbors.
       // There are 8 max possible neighbors, but may be less if near
       // the border or within an obstacle
-      const std::array<Cell, NUM_NEIGHBORS> nbrCells = m_cSpace.getAccessibleNbrs(qPos);
+      const std::vector<Cell> nbrCells = m_cSpace.getAccessibleNbrs(qPos);
       for (const auto& nbrCell : nbrCells) {
         // Cell is marked as NULL_CELL if not accessible, or is itself
         if (nbrCell == NULL_CELL) {
@@ -156,7 +159,8 @@ class AStar
         if (!exploredNodes.at(nbrCell)) {
           Node nbr(nbrCell, qPos);
           const double parentGCost = nodeMap.at(qPos).gCost;
-          nbr.updateCosts(goal, parentGCost);
+          const bool areDiagNbrs = (nbrCell.x() - qPos.x() != 0 && nbrCell.y() - qPos.y() != 0);
+          nbr.updateCosts(goal, parentGCost, areDiagNbrs);
 
           // Add this neighbor to the unexplored nodes
           // if not on the open list, add to open list, and set current cell as
